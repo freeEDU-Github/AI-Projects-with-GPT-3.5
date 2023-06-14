@@ -29,7 +29,8 @@ st.markdown(page_bg, unsafe_allow_html=True)
 
 # Sidebar contents
 with st.sidebar:
-    image = Image.open('mindi.png')
+    image_path = os.path.join(os.path.dirname(__file__), 'mindi.png')
+    image = Image.open(image_path)
     st.image(image)
     st.markdown("<h1 style='text-align: left;> About </h1>", unsafe_allow_html=True)
     st.markdown(
