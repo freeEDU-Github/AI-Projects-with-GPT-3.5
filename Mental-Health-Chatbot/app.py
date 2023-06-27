@@ -15,7 +15,7 @@ openai.api_key = st.secrets["openai_secret_key"]
 page_bg = f"""
 <style>
 [data-testid="stSidebar"] {{
-background-color:#EFEFE8;
+background-color:#2C3C2C;
 
 }}
 
