@@ -12,20 +12,6 @@ openai.api_key = st.secrets["openai_secret_key"]
 # # And the root-level secrets are also accessible as environment variables:
 # os.environ["openai_secret_key"] == st.secrets["openai_secret_key"]
 
-page_bg = f"""
-<style>
-[data-testid="stSidebar"] {{
-background-color:#2C3C2C;
-
-}}
-
-[data-testid="stToolbar"] {{
-background-color:#FCFCFC;
-
-}}
-</style>
-"""
-st.markdown(page_bg, unsafe_allow_html=True)
 
 # Sidebar contents
 with st.sidebar:
