@@ -14,7 +14,7 @@ st.set_page_config(page_title="LinguaBot")
 
 # Sidebar contents
 with st.sidebar:
-    image_path = "linguabot.png"  # Path to the Linguabot image
+    image_path = os.path.join(os.path.dirname(__file__), 'linguabot.png')
     image = Image.open(image_path)
     st.image(image)
     st.markdown("# About")
