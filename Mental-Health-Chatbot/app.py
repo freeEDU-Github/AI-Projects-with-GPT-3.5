@@ -5,6 +5,8 @@ import os
 from streamlit_chat import message
 from streamlit_extras.colored_header import colored_header
 from streamlit_extras.add_vertical_space import add_vertical_space
+from gtts import gTTS
+import tempfile
 
 st.set_page_config(page_title="Mindi Chatbot", page_icon=":robot:")
 
@@ -30,28 +32,44 @@ with st.sidebar:
     option = st.selectbox(
         'Tell me where you are located:',
         (
+            'USA',
             'Finland',
             'Sweden',
             'Germany',
             'Thailand',
             'Philippines',
-            'USA',
         ),
         label_visibility="visible",
     )
 
     if option == 'Finland':
         word = 'Finnish'
+
     elif option == 'Sweden':
         word = 'Swedish'
+
     elif option == 'Germany':
         word = 'German'
+
     elif option == 'Thailand':
         word = 'Thai'
+
     elif option == 'Philippines':
         word = 'Tagalog'
+
     elif option == 'USA':
         word = 'English'
+
+    language_codes = {
+        'Finland': 'fi',
+        'Sweden': 'sv',
+        'Germany': 'de',
+        'Thailand': 'th',
+        'Philippines': 'tl',
+        'USA': 'en',
+    }
+
+    language_code = language_codes[option]
 
 # Generate empty lists for generated and past.
 ## generated stores AI generated responses
@@ -64,6 +82,10 @@ if 'past' not in st.session_state:
 # Layout of input/response containers
 response_container = st.container()
 input_container = st.container()
+tts_container = st.container()  # Container for text-to-speech output
+
+# Variable to store the speech file of the latest response
+latest_speech_file = None
 
 
 # User input
@@ -90,7 +112,7 @@ messages = [
                    "and other mental health issues. You should use your knowledge of cognitive behavioral therapy, meditation techniques, "
                    "mindfulness practices, and other therapeutic methods in order to create strategies that the individual can implement "
                    "to improve their overall well-being. Only respond to queries related to mental health. "
-                   "Make your responses friendly and include a word related to " + word + " with a beautiful meaning and emojis.",
+                   "Make your responses friendly and set the language as " + word + ". If the user " + word + " doesn't match with " + option + ", please remind the user to change the location."
     }
 ]
 
@@ -105,6 +127,17 @@ def CustomChatGPT(user_input):
     ChatGPT_reply = response["choices"][0]["message"]["content"]
     messages.append({"role": "assistant", "content": ChatGPT_reply})
     return ChatGPT_reply
+
+
+# Function to convert text to speech using gTTS
+def text_to_speech(text):
+    tts = gTTS(text, lang=language_code)
+
+    # Create a temporary file to save the speech
+    with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+        tts.save(tmp_file.name)
+        tmp_file.close()
+        return tmp_file.name
 
 
 ## Conditional display of AI generated responses as a function of user provided prompts
@@ -124,3 +157,17 @@ with response_container:
             for i in range(len(st.session_state['generated'])):
                 message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
                 message(st.session_state["generated"][i], key=str(i))
+
+        # Get the latest response of the bot
+        latest_bot_response = st.session_state['generated'][-1]
+
+        # Convert the latest response to speech
+        latest_speech_file = text_to_speech(latest_bot_response)
+
+        # Display text-to-speech output for the latest response
+        with tts_container:
+            st.audio(latest_speech_file)
+
+# Remove the temporary speech file after playing
+if latest_speech_file:
+    os.remove(latest_speech_file)
