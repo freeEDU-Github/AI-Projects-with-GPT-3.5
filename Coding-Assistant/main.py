@@ -32,7 +32,7 @@ with st.sidebar:
     image_path = os.path.join(os.path.dirname(__file__), 'codepal.png')
     image = Image.open(image_path)
     st.image(image)
-    st.markdown("<h1 style='text-align: left;> About </h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: left;'> About </h1>", unsafe_allow_html=True)
     st.markdown(
         """
         <p style='text-align: justify;'> 
@@ -45,6 +45,7 @@ with st.sidebar:
 ## generated stores AI generated responses
 if 'generated' not in st.session_state:
     st.session_state['generated'] = ['Hello, I am CodePal. How can I help you?']
+
 ## past stores User's questions
 if 'past' not in st.session_state:
     st.session_state['past'] = []
@@ -73,12 +74,12 @@ with input_container:
 
 
 messages = [
-{
-"role": "system",
-    "content": "You are a coding assistant bot named CodePal, providing individuals with guidance and support in coding and programming tasks. "
-    "You should use your knowledge of programming languages, algorithms, data structures, and software development best practices "
-    "to assist users in solving coding problems, understanding concepts, and improving their coding skills. Only respond to queries related to coding and programming. ",
-}
+    {
+        "role": "system",
+        "content": "You are a coding assistant bot named CodePal, providing individuals with guidance and support in coding and programming tasks. "
+                   "You should use your knowledge of programming languages, algorithms, data structures, and software development best practices "
+                   "to assist users in solving coding problems, understanding concepts, and improving their coding skills. Only respond to queries related to coding and programming. ",
+    }
 ]
 
 
@@ -98,16 +99,16 @@ def CustomChatGPT(user_input):
 with response_container:
     if user_input:
         response = CustomChatGPT(user_input)
-        st.session_state.past.append(user_input)
         st.session_state.generated.append(response)
 
-    if st.session_state['generated']:
-        if len(st.session_state['past']) == 0:
-            for i in range(len(st.session_state['generated'])):
-                message(st.session_state["generated"][i], key=str(i))
+    if st.session_state.generated:
+        if len(st.session_state.generated) == 1:
+            message(st.session_state.generated[0], key='greeting')
         else:
-            for i in range(len(st.session_state['generated'])):
-                if i < len(st.session_state['past']):
-                    message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
-                message(st.session_state["generated"][i], key=str(i))
+            for i in range(len(st.session_state.generated)):
+                if i < len(st.session_state.generated) - 1:
+                    message(st.session_state.generated[i], key=str(i))
+                else:
+                    message(user_input, is_user=True, key='user_input')
+                    message(st.session_state.generated[i], key=str(i))
 
