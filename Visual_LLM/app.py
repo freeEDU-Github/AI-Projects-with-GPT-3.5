@@ -71,8 +71,9 @@ def get_response(container, prompt, image):
         # # Initialize the Bard API client
         # bard = Bard(token=token)
 
-        bard = Bard(token_from_browser=True)
+        # bard = Bard(token_from_browser=True)
 
+        bard = Bard()
         # Convert the image to bytes
         image_bytes = io.BytesIO()
         image.save(image_bytes, format='JPEG')
