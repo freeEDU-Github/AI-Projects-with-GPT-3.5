@@ -38,7 +38,7 @@ def process_input(container):
     image = None
 
     # Provide a list of example images for users to choose from
-    example_images = ["images/image1.jpg", "images/image2.jpg", "images/image3.jpg"]
+    example_images = ["image1.jpg", "image2.jpg", "image3.jpg"]
 
     selected_image = container.selectbox("Select an example image or upload your own:",
                                          ["Choose an option"] + example_images)
@@ -53,7 +53,8 @@ def process_input(container):
 
     else:
         # Load the selected example image and display it
-        image = Image.open(selected_image)
+        image_path = os.path.join(os.path.dirname(__file__), "images", selected_image)
+        image = Image.open(image_path)
         container.image(image, caption="Example Image", use_column_width=True)
 
     # Add a text input field for user prompt
@@ -65,7 +66,7 @@ def get_response(container, prompt, image):
     container.markdown("## Response")
 
     if prompt:
-        
+
         token = st.secrets["BARD_API_KEY"]
         # Initialize the Bard API client
         bard = Bard(token=token)
