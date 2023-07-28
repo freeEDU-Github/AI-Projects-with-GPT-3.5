@@ -52,7 +52,7 @@ def process_input(container):
             container.image(image, caption="Uploaded Image", use_column_width=True)
 
     else:
-        # Load the selected example image and display it
+        # Load the selected sample image and display it
         image_path = os.path.join(os.path.dirname(__file__), "images", selected_image)
         image = Image.open(image_path)
         container.image(image, caption="Example Image", use_column_width=True)
@@ -67,9 +67,11 @@ def get_response(container, prompt, image):
 
     if prompt:
 
-        token = st.secrets["BARD_API_KEY"]
-        # Initialize the Bard API client
-        bard = Bard(token=token)
+        # token = st.secrets["BARD_API_KEY"]
+        # # Initialize the Bard API client
+        # bard = Bard(token=token)
+
+        bard = Bard(token_from_browser=True)
 
         # Convert the image to bytes
         image_bytes = io.BytesIO()
